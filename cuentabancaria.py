@@ -51,25 +51,34 @@ class CuentaCorriente(CuentaBancaria):
                 print("Usted no posee saldo suficiente para realizar la operación")
 
 # Nueva clase CuentaAhorro que hereda CuentaBancaria
+                
 class CuentaAhorro(CuentaBancaria):
     def __init__(self,nombre_titular,dni_titular,fecha_nacimiento,saldo=0):
         super().__init__(nombre_titular,dni_titular,fecha_nacimiento,saldo)
         self._tasa_interes = 0.001
+
+    def __aplicar_interes(self):
+        self._saldo += self._saldo * self._tasa_interes
 
     def calcular_interes(self):
         return self._saldo * self._tasa_interes
 
     def depositar(self,monto):
         if monto > 0:
+            self.__aplicar_interes()    # Aplico interés antes de depositar
             self._saldo += monto
             print(f"Se depositaron {monto} en la cuenta de {self._nombre_titular}. Saldo actual: {self._saldo}")
         else:
             print("El monto a depositar debe ser mayor a 0.")
 
     def extraer(self,monto):
+        self.__aplicar_interes()        # Aplico interés antes de extraer
         if monto <= self._saldo:
             self._saldo -= monto
             print(f"Se extrajeron {monto} de la cuenta de {self._nombre_titular}. Saldo actual: {self._saldo}")
         else:
             print("Saldo insuficiente para realizar la operación.")
 
+    def obtener_saldo(self):
+        self.__aplicar_interes()        # Aplico interés antes de consultar saldo
+        return self._saldo
