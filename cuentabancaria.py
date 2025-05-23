@@ -53,32 +53,35 @@ class CuentaCorriente(CuentaBancaria):
 # Nueva clase CuentaAhorro que hereda CuentaBancaria
                 
 class CuentaAhorro(CuentaBancaria):
-    def __init__(self,nombre_titular,dni_titular,fecha_nacimiento,saldo=0):
-        super().__init__(nombre_titular,dni_titular,fecha_nacimiento,saldo)
+    def __init__(self, nombre_titular, dni_titular, fecha_nacimiento, saldo=0):
+        super().__init__(nombre_titular, dni_titular, fecha_nacimiento, saldo)
         self._tasa_interes = 0.001
 
-    def __aplicar_interes(self):
-        self._saldo += self._saldo * self._tasa_interes
+    def _aplicar_interes(self):
+        interes = self._saldo * self._tasa_interes
+        self._saldo = round(self._saldo + interes, 2)
 
     def calcular_interes(self):
-        return self._saldo * self._tasa_interes
+        return round(self._saldo * self._tasa_interes, 2)
 
-    def depositar(self,monto):
+    def depositar(self, monto):
         if monto > 0:
-            self.__aplicar_interes()    # Aplico interés antes de depositar
+            self._aplicar_interes()
             self._saldo += monto
+            self._saldo = round(self._saldo, 2)
             print(f"Se depositaron {monto} en la cuenta de {self._nombre_titular}. Saldo actual: {self._saldo}")
         else:
             print("El monto a depositar debe ser mayor a 0.")
 
-    def extraer(self,monto):
-        self.__aplicar_interes()        # Aplico interés antes de extraer
+    def extraer(self, monto):
+        self._aplicar_interes()
         if monto <= self._saldo:
             self._saldo -= monto
+            self._saldo = round(self._saldo, 2)
             print(f"Se extrajeron {monto} de la cuenta de {self._nombre_titular}. Saldo actual: {self._saldo}")
         else:
             print("Saldo insuficiente para realizar la operación.")
 
     def obtener_saldo(self):
-        self.__aplicar_interes()        # Aplico interés antes de consultar saldo
-        return self._saldo
+        self._aplicar_interes()
+        return round(self._saldo, 2)
